@@ -1,12 +1,17 @@
 let productsData = [];
 
-const myRequest = new XMLHttpRequest();
-myRequest.open("GET", "../assets/products.json");
-myRequest.send();
+// Fetch products.json using fetch (works perfectly on GitHub Pages)
+fetch("../assets/products.json") // Adjust path if needed
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`Failed to load products.json: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then((data) => {
+    productsData = data;
 
-myRequest.onreadystatechange = function () {
-  if (this.readyState === 4 && this.status === 200) {
-    productsData = JSON.parse(this.responseText);
+    // Now render your content
     renderElements(productsData, "laptop", "new-laptops", 10);
     renderElements(productsData, "PC", "new-pcs", 10);
     setupNavHoverMenu(productsData);
@@ -49,8 +54,10 @@ myRequest.onreadystatechange = function () {
         pageContainer.innerHTML = pageContainerOriginal;
       }
     });
-  }
-};
+  })
+  .catch((error) => {
+    console.error("Error loading products:", error);
+  });
 
 function renderElements(
   products,
@@ -79,7 +86,9 @@ function renderElements(
                   <i class="fa-solid fa-circle-xmark"></i> Out Of Stock
                  </p>`
           }
-          <button class="add-to-cart-button">Add To Cart</button>
+          <button class="add-to-cart-button" id=${
+            product.id
+          }">Add To Cart</button>
         </div>
         <a href="product-details.html?id=${product.id}" class="product-name">${
         product.name
@@ -122,7 +131,9 @@ function renderElementsWithABrandSelector(
                   <i class="fa-solid fa-circle-xmark"></i> Out Of Stock
                  </p>`
           }
-          <button class="add-to-cart-button">Add To Cart</button>
+          <button class="add-to-cart-button" id=${
+            product.id
+          }">Add To Cart</button>
         </div>
         <a href="product-details.html?id=${product.id}" class="product-name">${
         product.name
@@ -156,7 +167,9 @@ function renderAllElements(products, containerDivClass, numberOfElements) {
                 <i class="fa-solid fa-circle-xmark"></i> Out Of Stock
                </p>`
         }
-        <button class="add-to-cart-button">Add To Cart</button>
+        <button class="add-to-cart-button" id=${
+          product.id
+        }">Add To Cart</button>
       </div>
       <a href="product-details.html?id=${product.id}" class="product-name">${
       product.name
@@ -309,3 +322,27 @@ profileControls.addEventListener("mouseleave", scheduleHideMenu);
 
 hoverMenu.addEventListener("mouseenter", showMenu);
 hoverMenu.addEventListener("mouseleave", scheduleHideMenu);
+
+// let el;
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   let ob = document.querySelectorAll("button");console.log(ob);
+//   ob.forEach(function (e) {
+//     e.onclick = function (el) {
+//       let t = JSON.parse(
+//         JSON.parse(localStorage.getItem(localStorage.getItem("Signed")))
+//       );
+//       console.log(productsData[el.target.id - 1]);
+//       console.log(Object.keys(productsData[el.target.id - 1]));
+//       if (localStorage.getItem("Signed")) {
+//         t[localStorage.getItem("Signed")]["id"].push(`${el.target.id}`);
+//         localStorage.setItem(
+//           localStorage.getItem("Signed"),
+//           JSON.stringify(JSON.stringify(t))
+//         );
+//       } else {
+//         window.alert("sign in first");
+//       }
+//     };
+//   });
+// });
